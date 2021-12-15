@@ -1,6 +1,9 @@
 ![Mollie](https://www.mollie.nl/files/Mollie-Logo-Style-Small.png)
 
 # Changelog #
+## Changes in release 5.0.0 ##
++ Added restriction to only allow this module to be used in ps1.6.1.0 - 1.6.1.24
+
 ## Changes in release 4.4.3 ##
 + Bank transfer now creates order on open status.
 + Fixed issue with klarna shipping status where it was set as completed.
