@@ -4,6 +4,8 @@
 ## Changes in release 4.5.0 ##
 + Added restriction to only allow this module to be used in ps1.6.1.0 - 1.6.1.24
 + Fixed missing transaction id on order payments.
++ Fixed update url display in settings page.
++ Fixed order refund status for order API and vouchers.
 
 ## Changes in release 4.4.3 ##
 + Bank transfer now creates order on open status.
