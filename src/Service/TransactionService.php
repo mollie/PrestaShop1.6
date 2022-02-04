@@ -188,8 +188,24 @@ class TransactionService
                         $payment->update();
                     }
                     $apiPayment->update();
-                } elseif (strpos($apiPayment->orderNumber, OrderNumberUtility::ORDER_NUMBER_PREFIX) === 0) {
-                    return $transactionNotUsedMessage;
+                } elseif ($apiPayment->amountRefunded) {
+                    if (strpos($apiPayment->description, OrderNumberUtility::ORDER_NUMBER_PREFIX) === 0) {
+                        return $transactionNotUsedMessage;
+                    }
+                    if (isset($apiPayment->amount->value, $apiPayment->amountRefunded->value)
+                        && NumberUtility::isLowerOrEqualThan($apiPayment->amount->value, $apiPayment->amountRefunded->value)
+                    ) {
+                        $this->orderStatusService->setOrderStatus($orderId, RefundStatus::STATUS_REFUNDED);
+                    } else {
+                        if ($apiPayment->method === Config::MOLLIE_VOUCHER_METHOD_ID) {
+                            $payment = $apiPayment->payments()[0];
+                            if (NumberUtility::isLowerOrEqualThan($payment->details->remainderAmount->value, $apiPayment->amountRefunded->value)) {
+                                $this->orderStatusService->setOrderStatus($orderId, RefundStatus::STATUS_REFUNDED);
+                            }
+                        } else {
+                            $this->orderStatusService->setOrderStatus($orderId, Config::PARTIAL_REFUND_CODE);
+                        }
+                    }
                 } else {
                     if (in_array($apiPayment->method, Config::KLARNA_PAYMENTS) && $apiPayment->status === OrderStatus::STATUS_COMPLETED) {
                         $this->orderStatusService->setOrderStatus($orderId, Config::MOLLIE_STATUS_KLARNA_SHIPPED);
@@ -200,6 +216,8 @@ class TransactionService
 
                 $orderId = Order::getOrderByCartId((int) $apiPayment->metadata->cart_id);
         }
+
+        $this->updateTransaction($orderId, $transaction);
 
         // Store status in database
         if (!$this->savePaymentStatus($transaction->id, $apiPayment->status, $orderId)) {
@@ -239,6 +257,30 @@ class TransactionService
         }
 
         $this->updateOrderPayments($transactionInfos, $orderReference);
+    }
+
+    /**
+     * @param int $orderId
+     * @param MolliePaymentAlias|MollieOrderAlias $transaction
+     *
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
+    public function updateTransaction($orderId, $transaction)
+    {
+        $order = new Order($orderId);
+        if (!$order->getOrderPayments()) {
+            $this->updateOrderTransaction($transaction->id, $order->reference);
+        } else {
+            /** @var OrderPayment $orderPayment */
+            foreach ($order->getOrderPayments() as $orderPayment) {
+                if ($orderPayment->transaction_id) {
+                    continue;
+                }
+                $orderPayment->transaction_id = $transaction->id;
+                $orderPayment->update();
+            }
+        }
     }
 
     /**
