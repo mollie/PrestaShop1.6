@@ -16,11 +16,11 @@ Mollie supports the following payment methods: iDEAL, Credit card, Bancontact, S
 
 [![Build Status](https://travis-ci.org/mollie/PrestaShop.svg?branch=master)](https://travis-ci.org/mollie/PrestaShop)
 [![Greenkeeper badge](https://badges.greenkeeper.io/mollie/PrestaShop.svg)](https://greenkeeper.io/)
-[![Release badge](https://img.shields.io/github/release/mollie/PrestaShop.svg)](https://github.com/mollie/PrestaShop/releases/latest)
+[![Release badge](https://img.shields.io/github/release/mollie/PrestaShop.svg)](https://github.com/mollie/PrestaShop1.6/releases)
 
 ## Installation PrestaShop 1.6 ##
 
-* Download the latest version of the module (the '.zip' file) via the [Releases-page](https://github.com/mollie/Prestashop/releases) which is compatible 
+* Download the latest version of the module (the '.zip' file) via the [Releases-page](https://github.com/mollie/PrestaShop1.6/releases) which is compatible 
 with PrestaShop 1.6.
 * Go to the administration panel of your PrestaShop webshop
 * In your administration panel, select the 'Modules' tab and then choose 'upload a module' at the top right of your screen
@@ -30,7 +30,7 @@ with PrestaShop 1.6.
 
 ## or ##
 
-* Download the latest version of the module (the '.zip' file) via the [Releases-page](https://github.com/mollie/Prestashop/releases) which is compatible 
+* Download the latest version of the module (the '.zip' file) via the [Releases-page](https://github.com/mollie/PrestaShop1.6/releases) which is compatible 
 with PrestaShop 1.6.
 * Extract the archive
 * Copy the `mollie` folder to the` modules` folder via FTP in your PrestaShop installation
@@ -43,7 +43,7 @@ with PrestaShop 1.6.
 
 Do you have problems with the installation or do you think the module contains a bug? The fastest way to receive support is by raising an issue in our "issues" tab in GitHub or send us an email at info@mollie.com
 
-Be sure to check our [Wiki](https://github.com/mollie/PrestaShop/wiki) for help as well!
+Be sure to check our [Wiki](https://github.com/mollie/PrestaShop1.6/wiki) for help as well!
 
 
 ## Maintained by [Invertus](https://www.invertus.eu/). ##
