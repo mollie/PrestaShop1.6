@@ -76,10 +76,12 @@ class MollieWebhookModuleFrontController extends ModuleFrontController
         }
         try {
             if (TransactionUtility::isOrderTransaction($transactionId)) {
-                $payment = $transactionService->processTransaction($this->module->api->orders->get($transactionId, ['embed' => 'payments']));
+                $transaction = $this->module->api->orders->get($transactionId, ['embed' => 'payments']);
             } else {
-                $payment = $transactionService->processTransaction($this->module->api->payments->get($transactionId));
+                $transaction = $this->module->api->payments->get($transactionId);
             }
+            $this->setContext($transaction->metadata->cart_id);
+            $payment = $transactionService->processTransaction($transaction);
         } catch (\exception $e) {
             return $e->getMessage();
         }
@@ -89,5 +91,13 @@ class MollieWebhookModuleFrontController extends ModuleFrontController
         }
 
         return 'OK';
+    }
+
+    private function setContext(int $cartId)
+    {
+        $cart = new Cart($cartId);
+        $this->context->currency = new Currency($cart->id_currency);
+        $this->context->customer = new Customer($cart->id_customer);
+        $this->context->cart = $cart;
     }
 }

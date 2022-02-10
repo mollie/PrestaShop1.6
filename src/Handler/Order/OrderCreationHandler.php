@@ -183,7 +183,6 @@ class OrderCreationHandler
                 $orderStatus = Config::STATUS_PAID_ON_BACKORDER;
             }
         }
-        $this->updateTransaction($orderId, $apiPayment);
 
         $this->feeService->createOrderFee($cartId, $paymentFee);
 

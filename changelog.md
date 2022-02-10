@@ -6,6 +6,7 @@
 + Fixed missing transaction id on order payments.
 + Fixed update url display in settings page.
 + Fixed order refund status for order API and vouchers.
++ Fixed issue with context where payment fee would fail if using not default currency
 
 ## Changes in release 4.4.3 ##
 + Bank transfer now creates order on open status.
