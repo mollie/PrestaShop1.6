@@ -84,7 +84,7 @@ class MollieWebhookModuleFrontController extends ModuleFrontController
                 }
             }
             $metaData = $transaction->metadata;
-            $cartId = $metaData->cart_id ?? 0;
+            $cartId = isset($metaData->cart_id) ? $metaData->cart_id : 0;
             $this->setContext($cartId);
             $payment = $transactionService->processTransaction($transaction);
         } catch (\exception $e) {
@@ -98,7 +98,7 @@ class MollieWebhookModuleFrontController extends ModuleFrontController
         return 'OK';
     }
 
-    private function setContext(int $cartId): void
+    private function setContext($cartId)
     {
         if (!$cartId) {
             return;
