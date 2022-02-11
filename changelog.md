@@ -7,6 +7,7 @@
 + Fixed update url display in settings page.
 + Fixed order refund status for order API and vouchers.
 + Fixed issue with context where payment fee would fail if using not default currency
++ Fixed issue where order API refund would fail on webhook call.
 
 ## Changes in release 4.4.3 ##
 + Bank transfer now creates order on open status.
