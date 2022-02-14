@@ -8,6 +8,7 @@
 + Fixed order refund status for order API and vouchers.
 + Fixed issue with context where payment fee would fail if using not default currency
 + Fixed issue where order API refund would fail on webhook call.
++ Fixed one-page checkout issue with credit card where JS would fail to load because payments are loaded after JS.
 
 ## Changes in release 4.4.3 ##
 + Bank transfer now creates order on open status.
