@@ -189,7 +189,7 @@ class TransactionService
                     }
                     $apiPayment->update();
                 } elseif ($apiPayment->amountRefunded) {
-                    if (strpos($apiPayment->description, OrderNumberUtility::ORDER_NUMBER_PREFIX) === 0) {
+                    if (strpos($apiPayment->orderNumber, OrderNumberUtility::ORDER_NUMBER_PREFIX) === 0) {
                         return $transactionNotUsedMessage;
                     }
                     if (isset($apiPayment->amount->value, $apiPayment->amountRefunded->value)

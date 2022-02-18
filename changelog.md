@@ -2,6 +2,9 @@
 
 # Changelog #
 ## Changes in release 4.5.0 ##
++ Fixed order API check for refunded payments that check if transaction is still used.
+
+## Changes in release 4.5.0 ##
 + Added restriction to only allow this module to be used in ps1.6.1.0 - 1.6.1.24
 + Fixed missing transaction id on order payments.
 + Fixed update url display in settings page.
