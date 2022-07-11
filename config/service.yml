@@ -143,6 +143,9 @@ services:
       - '@Mollie\Service\OrderStatusService'
       - '@Mollie\Repository\PaymentMethodRepository'
       - '@Mollie\Handler\Order\OrderCreationHandler'
+      - '@Mollie\Service\PaymentMethodService'
+      - '@Mollie\Service\MollieOrderCreationService'
+      - '@Mollie\Handler\Order\OrderFeeHandler'
 
   Mollie\Service\MolliePaymentMailService:
     class: Mollie\Service\MolliePaymentMailService
@@ -219,3 +222,9 @@ services:
 
   Mollie\Service\EntityManager\ObjectModelManager:
     class: Mollie\Service\EntityManager\ObjectModelManager
+
+  Mollie\Service\MollieOrderCreationService:
+    class: Mollie\Service\MollieOrderCreationService
+    arguments:
+      - '@Mollie\Handler\Exception\OrderExceptionHandler'
+      - '@mollie'
