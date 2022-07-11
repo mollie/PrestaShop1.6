@@ -62,7 +62,7 @@ class OrderFeeHandler
         $this->paymentMethodService = $paymentMethodService;
     }
 
-    public function addOrderFee(int $orderId, $apiPayment)
+    public function addOrderFee($orderId, $apiPayment)
     {
         $order = new Order($orderId);
 

@@ -422,7 +422,7 @@ class TransactionService
     {
         $paymentMethod = $this->paymentMethodRepository->getPaymentBy('order_reference', $apiPayment->description);
         if ($paymentMethod) {
-            $orderId = Order::getOrderByCartId($paymentMethod['cart_id']);
+            $orderId = (int) Order::getOrderByCartId($paymentMethod['cart_id']);
             if (!$orderId) {
                 return;
             }
@@ -438,7 +438,7 @@ class TransactionService
     {
         $paymentMethod = $this->paymentMethodRepository->getPaymentBy('order_reference', $apiPayment->orderNumber);
         if ($paymentMethod) {
-            $orderId = Order::getOrderByCartId($paymentMethod['cart_id']);
+            $orderId = (int) Order::getOrderByCartId($paymentMethod['cart_id']);
             if (!$orderId) {
                 return;
             }
