@@ -1,6 +1,9 @@
 ![Mollie](https://www.mollie.nl/files/Mollie-Logo-Style-Small.png)
 
 # Changelog #
+## Changes in release 4.5.1 ##
++ Fixed issue where expired transactions changes order status.
+
 ## Changes in release 4.5.0 ##
 + Added restriction to only allow this module to be used in ps1.6.1.0 - 1.6.1.24
 + Fixed missing transaction id on order payments.
