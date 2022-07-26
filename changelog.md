@@ -3,8 +3,6 @@
 # Changelog #
 ## Changes in release 4.5.1 ##
 + Fixed issue where expired transactions changes order status.
-
-## Changes in release 4.5.0 ##
 + Fixed order API check for refunded payments that check if transaction is still used.
 
 ## Changes in release 4.5.0 ##
