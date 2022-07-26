@@ -46,3 +46,9 @@ services:
       - '@Mollie\Service\OrderStatusService'
       - '@Mollie\Service\OrderFeeService'
 
+
+  Mollie\Handler\Order\OrderFeeHandler:
+    class: Mollie\Handler\Order\OrderFeeHandler
+    arguments:
+      - '@Mollie\Service\OrderFeeService'
+      - '@Mollie\Service\PaymentMethodService'

@@ -85,7 +85,7 @@ class CanSendShipment implements ShipmentVerificationInterface
         }
 
         if (!$this->isRegularPayment($order->id)) {
-            throw new ShipmentCannotBeSentException('Shipment information cannot be sent. Order has no payment information', ShipmentCannotBeSentException::PAYMENT_IS_NOT_ORDER, $order->reference);
+            throw new ShipmentCannotBeSentException('Shipment information cannot be sent. Order is regular payment', ShipmentCannotBeSentException::PAYMENT_IS_NOT_ORDER, $order->reference);
         }
 
         return true;
