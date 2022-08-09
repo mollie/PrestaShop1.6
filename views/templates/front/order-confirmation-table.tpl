@@ -25,7 +25,7 @@
                     {foreach from=$product.customizations item="customization"}
                         <div class="customizations">
                             <a href="#" data-toggle="modal"
-                               data-target="#product-customizations-modal-{$customization.id_customization|intval}">{l s='Product customization' d='Shop.Theme.Catalog'}</a>
+                               data-target="#product-customizations-modal-{$customization.id_customization|intval}">{l s='Product customization' mod='mollie'}</a>
                         </div>
                         <div class="modal fade customization-modal"
                              id="product-customizations-modal-{$customization.id_customization|intval}" tabindex="-1"
@@ -36,7 +36,7 @@
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
-                                        <h4 class="modal-title">{l s='Product customization' d='Shop.Theme.Catalog'}</h4>
+                                        <h4 class="modal-title">{l s='Product customization' mod='mollie'}</h4>
                                     </div>
                                     <div class="modal-body">
                                         {foreach from=$customization.fields item="field"}
@@ -105,7 +105,7 @@
         {if $subtotals.tax.label !== null}
             <tr class="sub taxes">
                 <td>
-                    <span class="label">{l s='%label%:' sprintf=['%label%' => $subtotals.tax.label] d='Shop.Theme.Global'}</span>&nbsp;<span
+                    <span class="label">{l s='%label%:' sprintf=['%label%' => $subtotals.tax.label] mod='mollie'}</span>&nbsp;<span
                             class="value">{$subtotals.tax.value|escape:'html':'UTF-8'}</span></td>
             </tr>
         {/if}

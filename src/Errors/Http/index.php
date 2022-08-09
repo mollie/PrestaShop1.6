@@ -1,13 +1,4 @@
 <?php
-/**
- * Mollie       https://www.mollie.nl
- *
- * @author      Mollie B.V. <info@mollie.nl>
- * @copyright   Mollie B.V.
- * @license     https://github.com/mollie/PrestaShop/blob/master/LICENSE.md
- *
- * @see        https://github.com/mollie/PrestaShop
- */
 
 header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');

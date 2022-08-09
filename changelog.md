@@ -1,8 +1,21 @@
 ![Mollie](https://www.mollie.nl/files/Mollie-Logo-Style-Small.png)
 
 # Changelog #
-## Changes in release 5.0.0 ##
+## Changes in release 4.5.2 ##
++ Fixed issue where credit card payment would show id not found instead of order confirmation page when order is paid.
+
+## Changes in release 4.5.1 ##
++ Fixed issue where expired transactions changes order status.
++ Fixed order API check for refunded payments that check if transaction is still used.
+
+## Changes in release 4.5.0 ##
 + Added restriction to only allow this module to be used in ps1.6.1.0 - 1.6.1.24
++ Fixed missing transaction id on order payments.
++ Fixed update url display in settings page.
++ Fixed order refund status for order API and vouchers.
++ Fixed issue with context where payment fee would fail if using not default currency
++ Fixed issue where order API refund would fail on webhook call.
++ Fixed one-page checkout issue with credit card where JS would fail to load because payments are loaded after JS.
 
 ## Changes in release 4.4.3 ##
 + Bank transfer now creates order on open status.
