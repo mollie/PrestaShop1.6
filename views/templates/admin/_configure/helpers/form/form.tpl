@@ -53,7 +53,7 @@
             {foreach $input.paymentMethods as $paymentMethod}
                 {assign var = 'methodObj' value=$paymentMethod.obj}
                 <li class="payment-method border border-bottom">
-                    <input type="hidden" name="payment_option_position[{$paymentMethod.obj->id|intval}]" value="{$paymentMethod.obj->position}" class="js-payment-option-position">
+                    <input type="hidden" name="payment_option_position[{$paymentMethod.obj->id|escape:'htmlall':'UTF-8'}]" value="{$paymentMethod.obj->position|escape:'htmlall':'UTF-8'}" class="js-payment-option-position">
                     <span class="js-sort-handle sort-handle">
           <span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
           <a class="text collapsed payment-method__text" data-toggle="collapse" href="#payment-method-form-{$paymentMethod.id|escape:'html':'UTF-8'}"
@@ -116,7 +116,7 @@
                                     <option value="orders" {if $methodObj->method === 'orders'} selected {/if}>{l s='Orders API' mod='mollie'}</option>
                                 </select>
                                 <p class="help-block">
-                                    {$input.methodDescription}
+                                    {$input.methodDescription|escape:'html':'UTF-8'}
                                 </p>
                             </div>
                         </div>
@@ -445,22 +445,6 @@
               {if $fields_value[$input.name] == $value.value}checked="checked"{/if}
                       {if isset($input.disabled) && $input.disabled}disabled="disabled"{/if}
             />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 {strip}
               <label {if $value.value == 1} for="{$input.name|escape:'htmlall':'UTF-8'}_on"{else} for="{$input.name|escape:'htmlall':'UTF-8'}_off"{/if}>
             {if $value.value == 1}

@@ -8,6 +8,6 @@
 *}
 
 <div class="mollie-icon-container" data-id-order="{$idOrder|intval}">
-    <img class="resend-payment-mail-mollie" src="{$orderListIcon}" width="26" height="26" data-id-order="{$idOrder|intval}"/>
+    <img class="resend-payment-mail-mollie" src="{$orderListIcon}" width="26" height="26" data-id-order="{$idOrder|escape:'htmlall':'UTF-8'}"/>
     <div class="mollie-message-container">{$message|escape:'html':'UTF-8'}</div>
 </div>

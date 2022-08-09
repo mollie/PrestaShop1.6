@@ -31,7 +31,7 @@
                     <p>
                         <i class="icon-gear text-success"></i>
                         <strong>{l s='Enabled Methods: ' mod='mollie'}</strong>
-                        {', '|implode:$testKeyInfo.methods}
+                        {', '|implode:$testKeyInfo.methods|escape:'htmlall':'UTF-8'}
 
                     </p>
                 </div>
@@ -72,7 +72,7 @@
                     <p>
                         <i class="icon-gear text-success"></i>
                         <strong>{l s='Enabled Methods: ' mod='mollie'}</strong>
-                        {', '|implode:$liveKeyInfo.methods}
+                        {', '|implode:$liveKeyInfo.methods|escape:'htmlall':'UTF-8'}
                     </p>
                 </div>
             {/if}
