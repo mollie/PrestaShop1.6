@@ -1,6 +1,9 @@
 ![Mollie](https://www.mollie.nl/files/Mollie-Logo-Style-Small.png)
 
 # Changelog #
+## Changes in release 4.5.3 ##
++ Fixed href issue where html was escaped
+
 ## Changes in release 4.5.2 ##
 + Fixed issue where credit card payment would show id not found instead of order confirmation page when order is paid.
 
