@@ -47,6 +47,7 @@ class MollieReturnModuleFrontController extends AbstractMollieController
         $idCart = (int) Tools::getValue('cart_id');
         $key = Tools::getValue('key');
         $orderNumber = Tools::getValue('order_number');
+        $transactionId = Tools::getValue('transaction_id');
         $context = Context::getContext();
         $customer = $context->customer;
 
@@ -79,13 +80,20 @@ class MollieReturnModuleFrontController extends AbstractMollieController
             $cart = new Cart($idCart);
             $data['auth'] = (int) $cart->id_customer === $customer->id;
             if ($data['auth']) {
-                $data['mollie_info'] = $paymentMethodRepo->getPaymentBy('order_reference', (string) $orderNumber);
+                if ($transactionId) {
+                    $data['mollie_info'] = $paymentMethodRepo->getPaymentBy('transaction_id', (string) $transactionId);
+                } else {
+                    $data['mollie_info'] = $paymentMethodRepo->getPaymentBy('order_reference', (string) $orderNumber);
+                }
             }
         }
 
         if (isset($data['auth']) && $data['auth']) {
             // any paid payments for this cart?
 
+            if (false === $data['mollie_info']) {
+                $data['mollie_info'] = $paymentMethodRepo->getPaymentBy('order_id', (int) Order::getOrderByCartId($idCart));
+            }
             if (false === $data['mollie_info']) {
                 $data['mollie_info'] = [];
                 $data['msg_details'] = $this->module->l('The order with this id does not exist.', self::FILE_NAME);
@@ -244,22 +252,22 @@ class MollieReturnModuleFrontController extends AbstractMollieController
             case PaymentStatus::STATUS_PAID:
             case PaymentStatus::STATUS_AUTHORIZED:
                 $transactionInfo = $paymentMethodRepo->getPaymentBy('transaction_id', $transaction->id);
-            if ($transaction->resource === Config::MOLLIE_API_STATUS_PAYMENT && $transaction->hasRefunds()) {
+                if ($transaction->resource === Config::MOLLIE_API_STATUS_PAYMENT && $transaction->hasRefunds()) {
+                    if (isset($transactionInfo['reason']) && $transactionInfo['reason'] === Config::WRONG_AMOUNT_REASON) {
+                        $this->setWarning($wrongAmountMessage);
+                    } else {
+                        $this->setWarning($notSuccessfulPaymentMessage);
+                    }
+                    $response = $paymentReturnService->handleFailedStatus($transaction);
+                    break;
+                }
+
                 if (isset($transactionInfo['reason']) && $transactionInfo['reason'] === Config::WRONG_AMOUNT_REASON) {
                     $this->setWarning($wrongAmountMessage);
-                } else {
-                    $this->setWarning($notSuccessfulPaymentMessage);
+                    $response = $paymentReturnService->handleFailedStatus($transaction);
+                    break;
                 }
-                $response = $paymentReturnService->handleFailedStatus($transaction);
-                break;
-            }
-
-            if (isset($transactionInfo['reason']) && $transactionInfo['reason'] === Config::WRONG_AMOUNT_REASON) {
-                $this->setWarning($wrongAmountMessage);
-                $response = $paymentReturnService->handleFailedStatus($transaction);
-                break;
-            }
-            $response = $paymentReturnService->handleStatus(
+                $response = $paymentReturnService->handleStatus(
                     $order,
                     $transaction,
                     $paymentReturnService::DONE

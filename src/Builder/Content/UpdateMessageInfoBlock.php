@@ -79,7 +79,7 @@ class UpdateMessageInfoBlock implements TemplateBuilderInterface
         if ($this->canBeUpdatedFromGithub()) {
             $updateMessage = defined('_TB_VERSION_')
                 ? $this->updateMessageProvider->getUpdateMessageFromOutsideUrl('https://github.com/mollie/thirtybees', $this->addons)
-                : $this->updateMessageProvider->getUpdateMessageFromOutsideUrl('https://github.com/mollie/PrestaShop', $this->addons);
+                : $this->updateMessageProvider->getUpdateMessageFromOutsideUrl('https://github.com/mollie/PrestaShop1.6', $this->addons);
         }
 
         return [

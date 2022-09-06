@@ -29,7 +29,7 @@
             </div>
             <div class="form-group form-group-expiry-date">
                 <div id="expiry-date" class="mollie-input expiry-date">
-                  <label class="mollie-label mollie-expiry-date-label" for="expiry-date-{$methodId}">{l s='Expiry date' mod='mollie'}</label>
+                  <label class="mollie-label mollie-expiry-date-label" for="expiry-date-{$methodId|escape:'htmlall':'UTF-8'}">{l s='Expiry date' mod='mollie'}</label>
                 </div>
             </div>
             <div class="form-group form-group-verification-code">

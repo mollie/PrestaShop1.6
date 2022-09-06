@@ -8,7 +8,7 @@
 *}
 <div>
     <span>
-        {$updateMessage}
+        {$updateMessage} {*need to display add full html so we can't escape it*}
     </span>
 </div>
 

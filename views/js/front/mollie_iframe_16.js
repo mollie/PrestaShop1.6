@@ -19,6 +19,19 @@
  * @codingStandardsIgnoreStart
  */
 $(document).ready(function () {
+    onLoad();
+    $( document ).ajaxComplete(function( event, xhr, settings ) {
+        if (typeof(settings.data) == "undefined" || settings.data === null) {
+            return;
+        }
+        if (settings.data.indexOf("updateTOSStatusAndGetPayments") >= 0) {
+            onLoad();
+        }
+    });
+});
+
+function onLoad()
+{
     var creditCardFactoryCached = null
 
     var creditCardFactory = function () {
@@ -148,4 +161,4 @@ $(document).ready(function () {
             $errorField.find('label').text('');
         }
     }
-});
+}

@@ -21,6 +21,7 @@ use Mollie\Handler\ErrorHandler\ErrorHandler;
 use Mollie\Handler\Exception\OrderExceptionHandler;
 use Mollie\Handler\Order\OrderCreationHandler;
 use Mollie\Repository\PaymentMethodRepository;
+use Mollie\Repository\PaymentMethodRepositoryInterface;
 use Mollie\Service\ExceptionService;
 use Mollie\Service\PaymentMethodService;
 use Mollie\Utility\OrderNumberUtility;
@@ -88,6 +89,8 @@ class MolliePaymentModuleFrontController extends ModuleFrontController
         $paymentMethodRepo = $this->module->getMollieContainer(PaymentMethodRepository::class);
         /** @var PaymentMethodService $transactionService */
         $transactionService = $this->module->getMollieContainer(PaymentMethodService::class);
+        /** @var PaymentMethodRepositoryInterface $paymentMethodRepository */
+        $paymentMethodRepository = $this->module->getMollieContainer(PaymentMethodRepositoryInterface::class);
 
         $environment = (int) Configuration::get(Mollie\Config\Config::MOLLIE_ENVIRONMENT);
         $paymentMethodId = $paymentMethodRepo->getPaymentMethodIdByMethodId($method, $environment);
@@ -117,8 +120,10 @@ class MolliePaymentModuleFrontController extends ModuleFrontController
         if (!$apiPayment) {
             return;
         }
-
-        $this->createOrder($apiPayment, $cart->id, $orderNumber);
+        $paymentMethod = $paymentMethodRepository->getPaymentBy('transaction_id', $apiPayment->id);
+        if (!$paymentMethod) {
+            $this->createOrder($apiPayment, $cart->id, $orderNumber);
+        }
 
         // Go to payment url
         if (null !== $apiPayment->getCheckoutUrl()) {
