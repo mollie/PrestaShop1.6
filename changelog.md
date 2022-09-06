@@ -1,6 +1,10 @@
 ![Mollie](https://www.mollie.nl/files/Mollie-Logo-Style-Small.png)
 
 # Changelog #
+## Changes in release 4.5.4 ##
++ Fixed issue where not secure credit card would sometimes throw error on checkout.
++ Fixed issue where on php5.6 order api would not change status in some cases.
+
 ## Changes in release 4.5.3 ##
 + Fixed href issue where html was escaped
 + Removed reference variables from translations.
