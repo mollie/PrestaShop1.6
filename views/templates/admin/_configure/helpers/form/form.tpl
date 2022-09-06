@@ -116,7 +116,7 @@
                                     <option value="orders" {if $methodObj->method === 'orders'} selected {/if}>{l s='Orders API' mod='mollie'}</option>
                                 </select>
                                 <p class="help-block">
-                                    {$input.methodDescription|escape:'html':'UTF-8'}
+                                    {$input.methodDescription}
                                 </p>
                             </div>
                         </div>
@@ -137,14 +137,14 @@
                                     {l s='The description to be used for this transaction. These variables are available:' mod='mollie'}
                                 </p>
                                 <p class="help-block">
-                                    <b>{l s='{orderNumber}' mod='mollie'}</b>,
-                                    <b>{l s='{storeName}' mod='mollie'}</b>,
-                                    <b>{l s='{countryCode}' mod='mollie'}</b>,
-                                    <b>{l s='{cart.id}' mod='mollie'}</b>,
-                                    <b>{l s='{order.reference}' mod='mollie'}</b>,
-                                    <b>{l s='{customer.firstname}' mod='mollie'}</b>,
-                                    <b>{l s='{customer.lastname}' mod='mollie'}</b>,
-                                    <b>{l s='{customer.company}' mod='mollie'}</b>,
+                                    <b>{'{orderNumber}'}</b>,
+                                    <b>{'{storeName}'}</b>,
+                                    <b>{'{countryCode}'}</b>,
+                                    <b>{'{cart.id}'}</b>,
+                                    <b>{'{order.reference}'}</b>,
+                                    <b>{'{customer.firstname}'}</b>,
+                                    <b>{'{customer.lastname}'}</b>,
+                                    <b>{'{customer.company}'}</b>
                                 </p>
                             </div>
                         </div>
