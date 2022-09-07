@@ -99,6 +99,16 @@ class OrderData implements JsonSerializable
      */
     private $deliveryPhoneNumber;
 
+    /**
+     * @var string
+     */
+    private $shippingStreetAndNumber;
+
+    /**
+     * @var string
+     */
+    private $billingStreetAndNumber;
+
     public function __construct(
         Amount $amount,
         $redirectUrl,
@@ -373,6 +383,46 @@ class OrderData implements JsonSerializable
         $this->payment = $payment;
     }
 
+    /**
+     * @return string
+     */
+    public function getShippingStreetAndNumber()
+    {
+        return $this->shippingStreetAndNumber;
+    }
+
+    /**
+     * @param string $shippingStreetAndNumber
+     *
+     * @return self
+     */
+    public function setShippingStreetAndNumber($shippingStreetAndNumber)
+    {
+        $this->shippingStreetAndNumber = $shippingStreetAndNumber;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBillingStreetAndNumber()
+    {
+        return $this->billingStreetAndNumber;
+    }
+
+    /**
+     * @param string $billingStreetAndNumber
+     *
+     * @return self
+     */
+    public function setBillingStreetAndNumber($billingStreetAndNumber)
+    {
+        $this->billingStreetAndNumber = $billingStreetAndNumber;
+
+        return $this;
+    }
+
     public function jsonSerialize()
     {
         $lines = [];
@@ -387,7 +437,7 @@ class OrderData implements JsonSerializable
             ],
             'billingAddress' => [
                 'organizationName' => ltrim($this->getBillingAddress()->company),
-                'streetAndNumber' => substr($this->getBillingAddress()->address1, 0, 100),
+                'streetAndNumber' => substr($this->getBillingStreetAndNumber(), 0, 100),
                 'city' => $this->getBillingAddress()->city,
                 'postalCode' => $this->getBillingAddress()->postcode,
                 'country' => (string) Country::getIsoById($this->getBillingAddress()->id_country),
@@ -397,7 +447,7 @@ class OrderData implements JsonSerializable
             ],
             'shippingAddress' => [
                 'organizationName' => ltrim($this->getShippingAddress()->company),
-                'streetAndNumber' => substr($this->getShippingAddress()->address1, 0, 100),
+                'streetAndNumber' => substr($this->getShippingStreetAndNumber(), 0, 100),
                 'city' => $this->getShippingAddress()->city,
                 'postalCode' => $this->getShippingAddress()->postcode,
                 'country' => (string) Country::getIsoById($this->getShippingAddress()->id_country),

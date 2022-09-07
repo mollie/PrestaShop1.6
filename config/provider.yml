@@ -10,6 +10,9 @@ services:
 
   Mollie\Provider\PhoneNumberProvider:
     class: Mollie\Provider\PhoneNumberProvider
+  
+  Mollie\Provider\StreetAndNumberProvider:
+    class: Mollie\Provider\StreetAndNumberProvider
 
   Mollie\Provider\Shipment\AutomaticShipmentSenderStatusesProvider:
     class: Mollie\Provider\Shipment\AutomaticShipmentSenderStatusesProvider
