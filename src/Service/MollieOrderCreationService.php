@@ -115,7 +115,7 @@ class MollieOrderCreationService
         );
     }
 
-    public function updateMolliePaymentReference(string $transactionId, string $orderReference)
+    public function updateMolliePaymentReference($transactionId, $orderReference)
     {
         Db::getInstance()->update(
             'mollie_payments',

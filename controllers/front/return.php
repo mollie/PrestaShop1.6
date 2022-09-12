@@ -92,6 +92,7 @@ class MollieReturnModuleFrontController extends AbstractMollieController
             // any paid payments for this cart?
 
             if (false === $data['mollie_info']) {
+                /* @phpstan-ignore-next-line */
                 $data['mollie_info'] = $paymentMethodRepo->getPaymentBy('order_id', (int) Order::getOrderByCartId($idCart));
             }
             if (false === $data['mollie_info']) {
