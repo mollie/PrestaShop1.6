@@ -293,46 +293,6 @@ class PaymentData implements JsonSerializable
         $this->shippingAddress = $shippingAddress;
     }
 
-    /**
-     * @return string
-     */
-    public function getShippingStreetAndNumber()
-    {
-        return $this->shippingStreetAndNumber;
-    }
-
-    /**
-     * @param string $shippingStreetAndNumber
-     *
-     * @return self
-     */
-    public function setShippingStreetAndNumber($shippingStreetAndNumber)
-    {
-        $this->shippingStreetAndNumber = $shippingStreetAndNumber;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBillingStreetAndNumber()
-    {
-        return $this->billingStreetAndNumber;
-    }
-
-    /**
-     * @param string $billingStreetAndNumber
-     *
-     * @return self
-     */
-    public function setBillingStreetAndNumber($billingStreetAndNumber)
-    {
-        $this->billingStreetAndNumber = $billingStreetAndNumber;
-
-        return $this;
-    }
-
     public function jsonSerialize()
     {
         return [
@@ -341,16 +301,18 @@ class PaymentData implements JsonSerializable
                 'value' => (string) $this->getAmount()->getValue(),
             ],
             'billingAddress' => [
-                'streetAndNumber' => substr($this->getBillingStreetAndNumber(), 0, 100),
-                'city' => $this->getBillingAddress()->city,
-                'postalCode' => $this->getBillingAddress()->postcode,
-                'country' => (string) Country::getIsoById($this->getBillingAddress()->id_country),
+                'streetAndNumber' => $this->cleanUpInput($this->getBillingAddress()->address1),
+                'streetAdditional' => $this->cleanUpInput($this->getBillingAddress()->address2),
+                'city' => $this->cleanUpInput($this->getBillingAddress()->city),
+                'postalCode' => $this->cleanUpInput($this->getBillingAddress()->postcode),
+                'country' => $this->cleanUpInput(Country::getIsoById($this->getBillingAddress()->id_country)),
             ],
             'shippingAddress' => [
-                'streetAndNumber' => substr($this->getShippingStreetAndNumber(), 0, 100),
-                'city' => $this->getShippingAddress()->city,
-                'postalCode' => $this->getShippingAddress()->postcode,
-                'country' => (string) Country::getIsoById($this->getShippingAddress()->id_country),
+                'streetAndNumber' => $this->cleanUpInput($this->getShippingAddress()->address1),
+                'streetAdditional' => $this->cleanUpInput($this->getShippingAddress()->address2),
+                'city' => $this->cleanUpInput($this->getShippingAddress()->city),
+                'postalCode' => $this->cleanUpInput($this->getShippingAddress()->postcode),
+                'country' => $this->cleanUpInput(Country::getIsoById($this->getShippingAddress()->id_country)),
             ],
             'description' => $this->getDescription(),
             'redirectUrl' => $this->getRedirectUrl(),
@@ -362,5 +324,19 @@ class PaymentData implements JsonSerializable
             'cardToken' => $this->getCardToken(),
             'customerId' => $this->getCustomerId(),
         ];
+    }
+
+    private function cleanUpInput($input)
+    {
+        $defaultValue = 'N/A';
+
+        if (!isset($input) || empty($input)) {
+            return $defaultValue;
+        }
+
+        $input = ctype_space($input) ? $defaultValue : $input;
+        $input = ltrim($input);
+
+        return substr($input, 0, 100);
     }
 }

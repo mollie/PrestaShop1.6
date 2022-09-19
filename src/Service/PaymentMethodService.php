@@ -30,7 +30,6 @@ use Mollie\DTO\PaymentData;
 use Mollie\Exception\OrderCreationException;
 use Mollie\Provider\CreditCardLogoProvider;
 use Mollie\Provider\PhoneNumberProviderInterface;
-use Mollie\Provider\StreetAndNumberProviderInterface;
 use Mollie\Repository\MethodCountryRepository;
 use Mollie\Repository\PaymentMethodRepository;
 use Mollie\Service\PaymentMethod\PaymentMethodRestrictionValidationInterface;
@@ -90,8 +89,6 @@ class PaymentMethodService
 
     private $phoneNumberProvider;
 
-    private $streetAndNumberProvider;
-
     /**
      * @var PaymentMethodRestrictionValidationInterface
      */
@@ -119,8 +116,7 @@ class PaymentMethodService
         PhoneNumberProviderInterface $phoneNumberProvider,
         PaymentMethodRestrictionValidationInterface $paymentMethodRestrictionValidation,
         Country $country,
-        Shop $shop,
-        StreetAndNumberProviderInterface $streetAndNumberProvider
+        Shop $shop
     ) {
         $this->module = $module;
         $this->methodRepository = $methodRepository;
@@ -131,7 +127,6 @@ class PaymentMethodService
         $this->creditCardLogoProvider = $creditCardLogoProvider;
         $this->paymentMethodSortProvider = $paymentMethodSortProvider;
         $this->phoneNumberProvider = $phoneNumberProvider;
-        $this->streetAndNumberProvider = $streetAndNumberProvider;
         $this->paymentMethodRestrictionValidation = $paymentMethodRestrictionValidation;
         $this->country = $country;
         $this->shop = $shop;
@@ -314,12 +309,10 @@ class PaymentMethodService
             if (isset($cart->id_address_invoice)) {
                 $billing = new Address((int) $cart->id_address_invoice);
                 $paymentData->setBillingAddress($billing);
-                $paymentData->setBillingStreetAndNumber($this->streetAndNumberProvider->getStreetAndNumberFromAddress($billing));
             }
             if (isset($cart->id_address_delivery)) {
                 $shipping = new Address((int) $cart->id_address_delivery);
                 $paymentData->setShippingAddress($shipping);
-                $paymentData->setShippingStreetAndNumber($this->streetAndNumberProvider->getStreetAndNumberFromAddress($shipping));
             }
 
             if ($cardToken) {
@@ -347,13 +340,11 @@ class PaymentMethodService
 
                 $orderData->setBillingAddress($billing);
                 $orderData->setBillingPhoneNumber($this->phoneNumberProvider->getFromAddress($billing));
-                $orderData->setBillingStreetAndNumber($this->streetAndNumberProvider->getStreetAndNumberFromAddress($billing));
             }
             if (isset($cart->id_address_delivery)) {
                 $shipping = new Address((int) $cart->id_address_delivery);
                 $orderData->setShippingAddress($shipping);
                 $orderData->setDeliveryPhoneNumber($this->phoneNumberProvider->getFromAddress($shipping));
-                $orderData->setShippingStreetAndNumber($this->streetAndNumberProvider->getStreetAndNumberFromAddress($shipping));
             }
             $orderData->setOrderNumber($orderReference);
             $orderData->setLocale($this->getLocale($molPaymentMethod->method));
