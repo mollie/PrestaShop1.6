@@ -401,9 +401,9 @@ class Installer implements InstallerInterface
         $this->configurationAdapter->updateValue(Config::MOLLIE_METHOD_COUNTRIES, 0);
         $this->configurationAdapter->updateValue(Config::MOLLIE_METHOD_COUNTRIES_DISPLAY, 0);
         $this->configurationAdapter->updateValue(Config::MOLLIE_DISPLAY_ERRORS, false);
-        $this->configurationAdapter->updateValue(Config::MOLLIE_STATUS_OPEN, Configuration::get(Config::MOLLIE_STATUS_AWAITING));
+        $this->configurationAdapter->updateValue(Config::MOLLIE_STATUS_OPEN, $this->configurationAdapter->get(Config::MOLLIE_STATUS_AWAITING));
         $this->configurationAdapter->updateValue(Config::MOLLIE_STATUS_PAID, Configuration::get('PS_OS_PAYMENT'));
-        $this->configurationAdapter->updateValue(Config::MOLLIE_STATUS_COMPLETED, Configuration::get(Config::MOLLIE_STATUS_ORDER_COMPLETED));
+        $this->configurationAdapter->updateValue(Config::MOLLIE_STATUS_COMPLETED, $this->configurationAdapter->get(Config::MOLLIE_STATUS_ORDER_COMPLETED));
         $this->configurationAdapter->updateValue(Config::MOLLIE_STATUS_CANCELED, Configuration::get('PS_OS_CANCELED'));
         $this->configurationAdapter->updateValue(Config::MOLLIE_STATUS_EXPIRED, Configuration::get('PS_OS_CANCELED'));
         $this->configurationAdapter->updateValue(
@@ -411,7 +411,7 @@ class Installer implements InstallerInterface
             Configuration::get(Config::MOLLIE_STATUS_PARTIAL_REFUND)
         );
         $this->configurationAdapter->updateValue(Config::MOLLIE_STATUS_REFUNDED, Configuration::get('PS_OS_REFUND'));
-        $this->configurationAdapter->updateValue(Config::MOLLIE_STATUS_SHIPPING, Configuration::get(Config::MOLLIE_STATUS_PARTIALLY_SHIPPED));
+        $this->configurationAdapter->updateValue(Config::MOLLIE_STATUS_SHIPPING, $this->configurationAdapter->get(Config::MOLLIE_STATUS_PARTIALLY_SHIPPED));
         $this->configurationAdapter->updateValue(Config::MOLLIE_MAIL_WHEN_SHIPPING, true);
         $this->configurationAdapter->updateValue(Config::MOLLIE_MAIL_WHEN_PAID, true);
         $this->configurationAdapter->updateValue(Config::MOLLIE_MAIL_WHEN_COMPLETED, true);
@@ -520,7 +520,7 @@ class Installer implements InstallerInterface
 
     private function isStatusCreated($statusName)
     {
-        $status = new OrderState((int) Configuration::get($statusName));
+        $status = new OrderState((int) $this->configurationAdapter->get($statusName));
         if (Validate::isLoadedObject($status)) {
             return true;
         }
