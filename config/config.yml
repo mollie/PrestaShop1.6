@@ -36,7 +36,6 @@ services:
     class: Mollie\Install\Uninstall
     arguments:
       - '@Mollie\Install\DatabaseTableUninstaller'
-      - '@Mollie\Repository\OrderStateRepository'
       - '@Mollie\Tracker\Segment'
 
   Mollie\Install\DatabaseTableInstaller:
@@ -44,6 +43,8 @@ services:
 
   Mollie\Install\DatabaseTableUninstaller:
     class: Mollie\Install\DatabaseTableUninstaller
+    arguments:
+      - '@mollie.factory.module_factory'
 
   mollie.adapter.context:
     class: Mollie\Adapter\LegacyContext

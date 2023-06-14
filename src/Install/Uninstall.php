@@ -14,7 +14,6 @@ namespace Mollie\Install;
 
 use Configuration;
 use Mollie\Config\Config;
-use Mollie\Repository\OrderStateRepository;
 use Mollie\Tracker\Segment;
 use Tab;
 
@@ -31,22 +30,15 @@ class Uninstall implements UninstallerInterface
     private $databaseUninstaller;
 
     /**
-     * @var OrderStateRepository
-     */
-    private $orderStateRepository;
-
-    /**
      * @var Segment
      */
     private $segment;
 
     public function __construct(
         UninstallerInterface $databaseUninstaller,
-        OrderStateRepository $orderStateRepository,
         Segment $segment
     ) {
         $this->databaseUninstaller = $databaseUninstaller;
-        $this->orderStateRepository = $orderStateRepository;
         $this->segment = $segment;
     }
 
@@ -100,7 +92,26 @@ class Uninstall implements UninstallerInterface
             Config::MOLLIE_API_KEY_TEST,
         ];
 
-        $this->deleteConfigurations($configurations);
+        $orderStateConfigurations = [
+            Config::MOLLIE_STATUS_PARTIAL_REFUND,
+            Config::MOLLIE_STATUS_AWAITING,
+            Config::MOLLIE_STATUS_PARTIALLY_SHIPPED,
+            Config::MOLLIE_STATUS_ORDER_COMPLETED,
+            Config::MOLLIE_STATUS_KLARNA_AUTHORIZED,
+            Config::MOLLIE_STATUS_KLARNA_SHIPPED,
+            Config::MOLLIE_STATUS_OPEN,
+            Config::MOLLIE_STATUS_PAID,
+            Config::MOLLIE_STATUS_COMPLETED,
+            Config::MOLLIE_STATUS_CANCELED,
+            Config::MOLLIE_STATUS_EXPIRED,
+            Config::MOLLIE_STATUS_REFUNDED,
+            Config::MOLLIE_STATUS_SHIPPING,
+            Config::MOLLIE_STATUS_DEFAULT,
+        ];
+
+        $this->deleteConfigurations(
+            array_merge($configurations, $orderStateConfigurations)
+        );
     }
 
     private function deleteConfigurations(array $configurations)
