@@ -162,6 +162,15 @@ class Mollie extends PaymentModule
         $this->moduleContainer = $containerBuilder;
     }
 
+    public function getApiClient()
+    {
+        if (!$this->api) {
+            $this->setApiKey();
+        }
+
+        return $this->api;
+    }
+
     /**
      * @param string|bool $id
      *
@@ -729,8 +738,14 @@ class Mollie extends PaymentModule
             Mollie\Handler\Shipment\ShipmentSenderHandlerInterface::class
         );
 
+        $apiClient = $this->getApiClient();
+
+        if (!$apiClient) {
+            return;
+        }
+
         try {
-            $shipmentSenderHandler->handleShipmentSender($this->api, $order, $orderStatus);
+            $shipmentSenderHandler->handleShipmentSender($apiClient, $order, $orderStatus);
         } catch (Exception $e) {
             //todo: we logg error in handleShipment
         }
@@ -933,7 +948,13 @@ class Mollie extends PaymentModule
                 $orderReference
             );
 
-            $newPayment = $this->api->payments->create($paymentData->jsonSerialize());
+            $apiClient = $this->getApiClient();
+
+            if (!$apiClient) {
+                return;
+            }
+
+            $newPayment = $apiClient->payments->create($paymentData->jsonSerialize());
 
             /** @var \Mollie\Repository\PaymentMethodRepository $paymentMethodRepository */
             $paymentMethodRepository = $this->getMollieContainer(\Mollie\Repository\PaymentMethodRepository::class);

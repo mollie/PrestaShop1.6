@@ -74,7 +74,12 @@ class ShipmentSenderHandler implements ShipmentSenderHandlerInterface
                 $this->exceptionService->getErrorMessages(),
                 ['orderReference' => $order->reference]
             );
+
             $this->moduleLogger->error($message);
+
+            return false;
+        } catch (\Exception $exception) {
+            $this->moduleLogger->error($exception->getMessage());
 
             return false;
         }
