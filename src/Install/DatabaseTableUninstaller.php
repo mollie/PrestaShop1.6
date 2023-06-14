@@ -13,9 +13,18 @@
 namespace Mollie\Install;
 
 use Db;
+use Mollie\Factory\ModuleFactory;
 
 final class DatabaseTableUninstaller implements UninstallerInterface
 {
+    /** @var ModuleFactory */
+    private $moduleFactory;
+
+    public function __construct(ModuleFactory $moduleFactory)
+    {
+        $this->moduleFactory = $moduleFactory;
+    }
+
     public function uninstall()
     {
         foreach ($this->getCommands() as $query) {
@@ -41,6 +50,10 @@ final class DatabaseTableUninstaller implements UninstallerInterface
         $sql[] = 'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'mol_pending_order_cart_rule`;';
         $sql[] = 'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'mol_customer`;';
         $sql[] = 'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'mol_payment_method_order_total_restriction`;';
+
+        if ($moduleName = $this->moduleFactory->getModuleName()) {
+            $sql[] = 'UPDATE ' . _DB_PREFIX_ . 'order_state SET deleted = 1 WHERE module_name = "' . pSQL($moduleName) . '";';
+        }
 
         return $sql;
     }

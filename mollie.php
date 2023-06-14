@@ -123,6 +123,7 @@ class Mollie extends PaymentModule
     {
         /** @var \Mollie\Install\Uninstall $uninstall */
         $uninstall = $this->getMollieContainer(\Mollie\Install\Uninstall::class);
+
         if (!$uninstall->uninstall()) {
             $this->_errors[] = $uninstall->getErrors();
 
