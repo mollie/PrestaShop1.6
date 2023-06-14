@@ -13,8 +13,6 @@
 namespace Mollie\Handler\Shipment;
 
 use Mollie\Api\MollieApiClient;
-use Mollie\Exception\ShipmentCannotBeSentException;
-use Mollie\Service\ExceptionService;
 use Mollie\Service\Shipment\ShipmentInformationSenderInterface;
 use Mollie\Verification\Shipment\ShipmentVerificationInterface;
 use Order;
@@ -34,11 +32,6 @@ class ShipmentSenderHandler implements ShipmentSenderHandlerInterface
     private $shipmentInformationSender;
 
     /**
-     * @var ExceptionService
-     */
-    private $exceptionService;
-
-    /**
      * @var LoggerInterface
      */
     private $moduleLogger;
@@ -46,12 +39,10 @@ class ShipmentSenderHandler implements ShipmentSenderHandlerInterface
     public function __construct(
         ShipmentVerificationInterface $canSendShipment,
         ShipmentInformationSenderInterface $shipmentInformationSender,
-        ExceptionService $exceptionService,
         LoggerInterface $moduleLogger
     ) {
         $this->canSendShipment = $canSendShipment;
         $this->shipmentInformationSender = $shipmentInformationSender;
-        $this->exceptionService = $exceptionService;
         $this->moduleLogger = $moduleLogger;
     }
 
@@ -68,13 +59,8 @@ class ShipmentSenderHandler implements ShipmentSenderHandlerInterface
             if (!$this->canSendShipment->verify($order, $orderState)) {
                 return false;
             }
-        } catch (ShipmentCannotBeSentException $exception) {
-            $message = $this->exceptionService->getErrorMessageForException(
-                $exception,
-                $this->exceptionService->getErrorMessages(),
-                ['orderReference' => $order->reference]
-            );
-            $this->moduleLogger->error($message);
+        } catch (\Exception $exception) {
+            $this->moduleLogger->error($exception->getMessage());
 
             return false;
         }

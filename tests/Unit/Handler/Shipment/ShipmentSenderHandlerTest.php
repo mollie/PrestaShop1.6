@@ -1,10 +1,8 @@
 <?php
 
 use Mollie\Api\MollieApiClient;
-use Mollie\Exception\ShipmentCannotBeSentException;
 use Mollie\Handler\Shipment\ShipmentSenderHandler;
 use Mollie\Logger\PrestaLogger;
-use Mollie\Service\ExceptionService;
 use Mollie\Service\Shipment\ShipmentInformationSender;
 use Mollie\Verification\Shipment\CanSendShipment;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -36,11 +34,6 @@ class ShipmentSenderHandlerTest extends TestCase
      * @var ShipmentInformationSender|MockObject
      */
     private $shipmentInformationSender;
-
-    /**
-     * @var ExceptionService|MockObject
-     */
-    private $exceptionService;
 
     /**
      * @var PrestaLogger|MockObject
@@ -81,12 +74,6 @@ class ShipmentSenderHandlerTest extends TestCase
             ->getMock()
         ;
 
-        $this->exceptionService = $this
-            ->getMockBuilder(ExceptionService::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
-
         $this->moduleLogger = $this
             ->getMockBuilder(PrestaLogger::class)
             ->disableOriginalConstructor()
@@ -102,17 +89,6 @@ class ShipmentSenderHandlerTest extends TestCase
             ->willReturn(true)
         ;
 
-        $this->exceptionService
-            ->expects($this->never())
-            ->method('getErrorMessages')
-            ->willReturn([])
-        ;
-
-        $this->exceptionService
-            ->expects($this->never())
-            ->method('getErrorMessageForException')
-        ;
-
         $this->moduleLogger
             ->expects($this->never())
             ->method('error')
@@ -121,9 +97,9 @@ class ShipmentSenderHandlerTest extends TestCase
         $shipmentSenderHandler = new ShipmentSenderHandler(
             $this->canSendShipment,
             $this->shipmentInformationSender,
-            $this->exceptionService,
             $this->moduleLogger
         );
+
         $result = $shipmentSenderHandler->handleShipmentSender($this->apiClient, $this->order, $this->orderState);
 
         $this->assertEquals(true, $result);
@@ -136,22 +112,7 @@ class ShipmentSenderHandlerTest extends TestCase
         $this->canSendShipment
             ->expects($this->once())
             ->method('verify')
-            ->willThrowException(new ShipmentCannotBeSentException(
-                'Shipment information cannot be sent. No shipment information found by order reference',
-                ShipmentCannotBeSentException::NO_SHIPPING_INFORMATION,
-                $this->order->reference
-            ))
-        ;
-
-        $this->exceptionService
-            ->expects($this->once())
-            ->method('getErrorMessages')
-            ->willReturn([])
-        ;
-
-        $this->exceptionService
-            ->expects($this->once())
-            ->method('getErrorMessageForException')
+            ->willReturn(false)
         ;
 
         $this->moduleLogger
@@ -162,9 +123,9 @@ class ShipmentSenderHandlerTest extends TestCase
         $shipmentSenderHandler = new ShipmentSenderHandler(
             $this->canSendShipment,
             $this->shipmentInformationSender,
-            $this->exceptionService,
             $this->moduleLogger
         );
+
         $result = $shipmentSenderHandler->handleShipmentSender($this->apiClient, $this->order, $this->orderState);
 
         $this->assertEquals(false, $result);

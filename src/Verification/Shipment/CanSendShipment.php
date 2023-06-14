@@ -16,7 +16,6 @@ use Exception;
 use Mollie\Adapter\ConfigurationAdapter;
 use Mollie\Config\Config;
 use Mollie\Enum\PaymentTypeEnum;
-use Mollie\Exception\ShipmentCannotBeSentException;
 use Mollie\Handler\Api\OrderEndpointPaymentTypeHandlerInterface;
 use Mollie\Provider\Shipment\AutomaticShipmentSenderStatusesProviderInterface;
 use Mollie\Repository\PaymentMethodRepositoryInterface;
@@ -77,15 +76,15 @@ class CanSendShipment implements ShipmentVerificationInterface
         //		}
 
         if (!$this->isAutomaticShipmentAvailable($orderState->id)) {
-            throw new ShipmentCannotBeSentException('Shipment information cannot be sent. Automatic shipment sender is not available', ShipmentCannotBeSentException::AUTOMATIC_SHIPMENT_SENDER_IS_NOT_AVAILABLE, $order->reference);
+            return false;
         }
 
         if (!$this->hasPaymentInformation($order->id)) {
-            throw new ShipmentCannotBeSentException('Shipment information cannot be sent. Order has no payment information', ShipmentCannotBeSentException::ORDER_HAS_NO_PAYMENT_INFORMATION, $order->reference);
+            return false;
         }
 
         if (!$this->isRegularPayment($order->id)) {
-            throw new ShipmentCannotBeSentException('Shipment information cannot be sent. Order is regular payment', ShipmentCannotBeSentException::PAYMENT_IS_NOT_ORDER, $order->reference);
+            return false;
         }
 
         return true;

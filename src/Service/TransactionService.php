@@ -28,6 +28,7 @@ use Mollie\Errors\Http\HttpStatusCode;
 use Mollie\Exception\TransactionException;
 use Mollie\Handler\Order\OrderCreationHandler;
 use Mollie\Handler\Order\OrderFeeHandler;
+use Mollie\Handler\Shipment\ShipmentSenderHandlerInterface;
 use Mollie\Repository\PaymentMethodRepositoryInterface;
 use Mollie\Utility\MollieStatusUtility;
 use Mollie\Utility\NumberUtility;
@@ -69,6 +70,8 @@ class TransactionService
     private $mollieOrderCreationService;
     /** @var OrderFeeHandler */
     private $orderFeeHandler;
+    /** @var ShipmentSenderHandlerInterface */
+    private $shipmentSenderHandler;
 
     public function __construct(
         Mollie $module,
@@ -77,7 +80,8 @@ class TransactionService
         OrderCreationHandler $orderCreationHandler,
         PaymentMethodService $paymentMethodService,
         MollieOrderCreationService $mollieOrderCreationService,
-        OrderFeeHandler $orderFeeHandler
+        OrderFeeHandler $orderFeeHandler,
+        ShipmentSenderHandlerInterface $shipmentSenderHandler
     ) {
         $this->module = $module;
         $this->orderStatusService = $orderStatusService;
@@ -86,6 +90,7 @@ class TransactionService
         $this->paymentMethodService = $paymentMethodService;
         $this->mollieOrderCreationService = $mollieOrderCreationService;
         $this->orderFeeHandler = $orderFeeHandler;
+        $this->shipmentSenderHandler = $shipmentSenderHandler;
     }
 
     /**
@@ -111,6 +116,15 @@ class TransactionService
 
             throw new TransactionException('Transaction failed', HttpStatusCode::HTTP_BAD_REQUEST);
         }
+
+        $orderDescription = !empty($apiPayment->description) ? $apiPayment->description : $apiPayment->orderNumber;
+
+        $paymentMethod = $this->paymentMethodRepository->getPaymentBy('transaction_id', $apiPayment->id);
+
+        if (!$paymentMethod) {
+            $this->mollieOrderCreationService->createMolliePayment($apiPayment, (int) $apiPayment->metadata->cart_id, $orderDescription);
+        }
+
         /** @var int $orderId */
         $orderId = Order::getOrderByCartId((int) $apiPayment->metadata->cart_id);
 
@@ -125,12 +139,15 @@ class TransactionService
 
         switch ($apiPayment->resource) {
             case Config::MOLLIE_API_STATUS_PAYMENT:
+                PrestaShopLogger::addLog(__METHOD__ . ' said: Starting to process PAYMENT transaction.', Config::NOTICE);
+
                 if ($key !== $apiPayment->metadata->secure_key) {
                     throw new TransactionException('Security key is incorrect.', HttpStatusCode::HTTP_UNAUTHORIZED);
                 }
                 if (!$apiPayment->metadata->cart_id) {
                     throw new TransactionException('Cart id is missing in transaction metadata', HttpStatusCode::HTTP_UNPROCESSABLE_ENTITY);
                 }
+
                 if ($apiPayment->hasRefunds() || $apiPayment->hasChargebacks()) {
                     if (strpos($apiPayment->description, OrderNumberUtility::ORDER_NUMBER_PREFIX) === 0) {
                         $this->handlePaymentDescription($apiPayment);
@@ -158,6 +175,8 @@ class TransactionService
                 }
                 break;
             case Config::MOLLIE_API_STATUS_ORDER:
+                PrestaShopLogger::addLog(__METHOD__ . ' said: Starting to process ORDER transaction.', Config::NOTICE);
+
                 if ($key !== $apiPayment->metadata->secure_key) {
                     throw new TransactionException('Security key is incorrect.', HttpStatusCode::HTTP_UNAUTHORIZED);
                 }
@@ -169,10 +188,18 @@ class TransactionService
 
                 if (!$orderId && MollieStatusUtility::isPaymentFinished($apiPayment->status)) {
                     $orderId = $this->orderCreationHandler->createOrder($apiPayment, $cart->id, $isKlarnaOrder);
+
                     if (!$orderId) {
                         throw new TransactionException('Order is already created', HttpStatusCode::HTTP_METHOD_NOT_ALLOWED);
                     }
+
                     $apiPayment = $this->updateOrderDescription($apiPayment, $orderId);
+
+                    $this->savePaymentStatus($apiPayment->id, $apiPayment->status, $orderId);
+
+                    $order = new Order($orderId);
+
+                    $this->shipmentSenderHandler->handleShipmentSender($this->module->getApiClient(), $order, new \OrderState($order->current_state));
                 } elseif ($apiPayment->amountRefunded) {
                     if (strpos($apiPayment->orderNumber, OrderNumberUtility::ORDER_NUMBER_PREFIX) === 0) {
                         if (!MollieStatusUtility::isPaymentFinished($apiPayment->status)) {
@@ -214,15 +241,13 @@ class TransactionService
         if (!$orderId) {
             return 'Order with given transaction was not found';
         }
-        $paymentMethod = $this->paymentMethodRepository->getPaymentBy('transaction_id', $apiPayment->id);
+
         $order = new Order($orderId);
-        if (!$paymentMethod) {
-            $this->mollieOrderCreationService->createMolliePayment($apiPayment, $cart->id, $order->reference);
-        } else {
-            $this->mollieOrderCreationService->updateMolliePaymentReference($apiPayment->id, $order->reference);
-        }
+
+        $this->mollieOrderCreationService->updateMolliePaymentReference($apiPayment->id, $order->reference);
 
         $this->updateTransaction($orderId, $apiPayment);
+
         // Store status in database
         if (!$this->savePaymentStatus($apiPayment->id, $apiPayment->status, $orderId)) {
             if (Configuration::get(Config::MOLLIE_DEBUG_LOG) >= Config::DEBUG_LOG_ERRORS) {

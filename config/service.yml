@@ -146,6 +146,7 @@ services:
       - '@Mollie\Service\PaymentMethodService'
       - '@Mollie\Service\MollieOrderCreationService'
       - '@Mollie\Handler\Order\OrderFeeHandler'
+      - '@Mollie\Handler\Shipment\ShipmentSenderHandlerInterface'
 
   Mollie\Service\MolliePaymentMailService:
     class: Mollie\Service\MolliePaymentMailService
@@ -169,9 +170,7 @@ services:
     class: Mollie\Service\PaymentReturnService
     arguments:
       - '@mollie'
-      - '@Mollie\Repository\PaymentMethodRepository'
       - '@Mollie\Service\RepeatOrderLinkFactory'
-      - '@Mollie\Service\TransactionService'
       - '@Mollie\Handler\CartRule\CartRuleQuantityChangeHandler'
 
   Mollie\Service\UpgradeNoticeService:
