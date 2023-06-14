@@ -117,11 +117,7 @@ class TransactionService
             throw new TransactionException('Transaction failed', HttpStatusCode::HTTP_BAD_REQUEST);
         }
 
-         if (!empty($apiPayment->description)) {
-             $orderDescription = $apiPayment->description;
-         } else {
-             $orderDescription = $apiPayment->orderNumber;
-         }
+        $orderDescription = !empty($apiPayment->description) ? $apiPayment->description : $apiPayment->orderNumber;
 
         $paymentMethod = $this->paymentMethodRepository->getPaymentBy('transaction_id', $apiPayment->id);
 
