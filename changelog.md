@@ -2,6 +2,10 @@
 
 # Changelog #
 
+## Changes in release 4.5.4 ##
++ Improved order state installation process
++ Fixed auto shipment issue on selected order states.
+
 ## Changes in release 4.5.3 ##
 + Fixed href issue where html was escaped
 + Removed reference variables from translations.
