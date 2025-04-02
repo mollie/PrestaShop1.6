@@ -4,6 +4,13 @@
 
 # PrestaShop prestataire de paiement [Mollie](https://www.mollie.com/). #
 
+| PrestaShop version | Mollie modul                                                                                 |
+|------------------|----------------------------------------------------------------------------------------------|
+| 1.7.6 - 9.0.0    | [Mollie 6](https://github.com/mollie/PrestaShop/releases)                                    |
+| 1.7.0 - 1.7.5    | [Mollie 5](https://github.com/mollie/PrestaShop1.7.0-1.7.8/releases)                         |
+| 1.6.1 - 1.6.1.24 | [Mollie 4](https://github.com/mollie/PrestaShop1.6/releases)                                 |
+| 1.5              | [Mollie 3](https://addons.prestashop.com/en/payment-card-wallet/40307-mollie-payments.html)  |
+
 Téléchargez le module [Mollie](https://www.mollie.com/) pour PrestaShop. Mollie est un prestataire de paiement (PSP) qui fournit à votre boutique en ligne les modes de paiement en ligne les plus populaires. 
 
 Recevez facilement les paiements de clients européens. Mollie offre des modes de paiement à des tarifs très compétitifs. Ne payez que par transaction et sans frais cachés.
